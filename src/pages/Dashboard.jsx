@@ -51,11 +51,10 @@ export default function Dashboard() {
 
       <button
         onClick={handleTestExtraction}
-        className="mb-6 px-4 py-2 rounded-lg bg-black text-white"
-      >
-        Test Extraction
+        className="mb-6 px-4 py-2 rounded-lg bg-black text-white">
+        Run Extraction
       </button>
-
+      
       <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {renderTab()}
