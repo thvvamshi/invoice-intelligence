@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
+import { exportToCsv } from "../../utils/exportCsv";
+
 export default function InvoiceTable() {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("");
@@ -32,6 +34,11 @@ export default function InvoiceTable() {
       break;
   }
 
+  const exportInvoices = sortedInvoices.map(({ items, ...invoice }) => ({
+    ...invoice,
+    item_count: items?.length || 0,
+  }));
+
   if (!invoices.length) {
     return (
       <div className="mt-4 rounded-lg border bg-white p-8 text-center">
@@ -46,7 +53,7 @@ export default function InvoiceTable() {
 
   return (
     <div className="mt-4 overflow-hidden rounded-lg border bg-white">
-      <div className="flex gap-3 border-b p-4">
+      <div className="flex flex-wrap gap-3 border-b p-4">
         <input
           type="text"
           placeholder="Search invoices..."
@@ -66,6 +73,13 @@ export default function InvoiceTable() {
 
           <option value="amount-low">Amount Low → High</option>
         </select>
+
+        <button
+          onClick={() => exportToCsv("invoices", exportInvoices)}
+          className="rounded-lg bg-black px-4 py-2 text-white"
+        >
+          Export CSV
+        </button>
       </div>
 
       <div className="overflow-x-auto">

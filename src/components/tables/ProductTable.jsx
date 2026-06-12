@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
+import { exportToCsv } from "../../utils/exportCsv";
+
 export default function ProductTable() {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("");
@@ -42,7 +44,7 @@ export default function ProductTable() {
 
   return (
     <div className="mt-4 overflow-hidden rounded-lg border bg-white">
-      <div className="flex gap-3 border-b p-4">
+      <div className="flex flex-wrap gap-3 border-b p-4">
         <input
           type="text"
           placeholder="Search products..."
@@ -62,6 +64,13 @@ export default function ProductTable() {
 
           <option value="price-low">Price Low → High</option>
         </select>
+
+        <button
+          onClick={() => exportToCsv("products", sortedProducts)}
+          className="rounded-lg bg-black px-4 py-2 text-white"
+        >
+          Export CSV
+        </button>
       </div>
 
       <div className="overflow-x-auto">
