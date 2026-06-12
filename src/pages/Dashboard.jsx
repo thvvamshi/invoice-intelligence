@@ -21,17 +21,14 @@ import { setCustomers } from "../redux/customerSlice";
 
 import { processWithAI } from "../services/aiExtraction.service";
 
+import { deduplicateById } from "../utils/deduplicate";
+
 export default function Dashboard() {
-  const [activeTab, setActiveTab] =
-    useState("Invoices");
+  const [activeTab, setActiveTab] = useState("Invoices");
 
   const dispatch = useDispatch();
 
-  const {
-    files,
-    addFiles,
-    removeFile,
-  } = useFileUpload();
+  const { files, addFiles, removeFile } = useFileUpload();
 
   const renderTab = () => {
     switch (activeTab) {
@@ -46,66 +43,45 @@ export default function Dashboard() {
     }
   };
 
-  const handleTestExtraction =
-    async () => {
-      try {
-        for (const fileData of files) {
-          const result =
-            await processWithAI(
-              fileData
-            );
+  const handleTestExtraction = async () => {
+    try {
+      const allInvoices = [];
+      const allProducts = [];
+      const allCustomers = [];
 
-          if (!result) continue;
+      for (const fileData of files) {
+        const result = await processWithAI(fileData);
 
-          dispatch(
-            setInvoices(
-              result.invoices || []
-            )
-          );
+        if (!result) continue;
 
-          dispatch(
-            setProducts(
-              result.products || []
-            )
-          );
+        allInvoices.push(...(result.invoices || []));
 
-          dispatch(
-            setCustomers(
-              result.customers || []
-            )
-          );
+        allProducts.push(...(result.products || []));
 
-          console.log(
-            "FILE:",
-            fileData.file.name
-          );
-
-          console.log(
-            "CATEGORY:",
-            fileData.category
-          );
-
-          console.log(
-            "REDUX UPDATED:",
-            result
-          );
-        }
-      } catch (error) {
-        console.error(
-          "Extraction failed:",
-          error
-        );
+        allCustomers.push(...(result.customers || []));
       }
-    };
+
+      dispatch(setInvoices(deduplicateById(allInvoices)));
+
+      dispatch(setProducts(deduplicateById(allProducts)));
+
+      dispatch(setCustomers(deduplicateById(allCustomers)));
+
+      console.log("Merged Results", {
+        invoices: deduplicateById(allInvoices),
+        products: deduplicateById(allProducts),
+        customers: deduplicateById(allCustomers),
+      });
+    } catch (error) {
+      console.error("Extraction failed:", error);
+    }
+  };
 
   return (
     <MainLayout>
       <FileUploader addFiles={addFiles} />
 
-      <FileList
-        files={files}
-        removeFile={removeFile}
-      />
+      <FileList files={files} removeFile={removeFile} />
 
       <button
         onClick={handleTestExtraction}
@@ -114,10 +90,7 @@ export default function Dashboard() {
         Run AI Extraction
       </button>
 
-      <TabNavigation
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
+      <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {renderTab()}
     </MainLayout>
