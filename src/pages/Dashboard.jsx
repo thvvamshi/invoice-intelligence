@@ -13,6 +13,8 @@ import useFileUpload from "../hooks/useFileUpload";
 import FileUploader from "../components/uploader/FileUploader";
 import FileList from "../components/uploader/FileList";
 
+import { processFile } from "../services/fileExtraction.service";
+
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("Invoices");
 
@@ -31,19 +33,30 @@ export default function Dashboard() {
     }
   };
 
+  const handleTestExtraction = async () => {
+    for (const fileData of files) {
+      const result = await processFile(fileData);
+
+      console.log(fileData.file.name);
+
+      console.log(result);
+    }
+  };
+
   return (
     <MainLayout>
       <FileUploader addFiles={addFiles} />
 
-      <FileList
-        files={files}
-        removeFile={removeFile}
-      />
+      <FileList files={files} removeFile={removeFile} />
 
-      <TabNavigation
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
+      <button
+        onClick={handleTestExtraction}
+        className="mb-6 px-4 py-2 rounded-lg bg-black text-white"
+      >
+        Test Extraction
+      </button>
+
+      <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {renderTab()}
     </MainLayout>
