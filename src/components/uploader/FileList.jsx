@@ -10,17 +10,27 @@ export default function FileList({
         Uploaded Files
       </h3>
 
-      <div className="space-y-2">
-        {files.map((file) => (
+      <div className="space-y-3">
+        {files.map((fileData) => (
           <div
-            key={file.name}
+            key={fileData.file.name}
             className="flex items-center justify-between border rounded-lg p-3"
           >
-            <span>{file.name}</span>
+            <div>
+              <p className="font-medium">
+                {fileData.file.name}
+              </p>
+
+              <p className="text-sm text-gray-500">
+                {fileData.category}
+              </p>
+            </div>
 
             <button
               onClick={() =>
-                removeFile(file.name)
+                removeFile(
+                  fileData.file.name
+                )
               }
               className="text-red-500"
             >
