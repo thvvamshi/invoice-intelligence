@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 export default function CustomerTable() {
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("");
 
   const customers = useSelector((state) => state.customers);
 
@@ -11,6 +12,25 @@ export default function CustomerTable() {
       customer.id?.toLowerCase().includes(search.toLowerCase()) ||
       customer.name?.toLowerCase().includes(search.toLowerCase()),
   );
+
+  const sortedCustomers = [...filteredCustomers];
+
+  switch (sortBy) {
+    case "name-asc":
+      sortedCustomers.sort((a, b) =>
+        (a.name || "").localeCompare(b.name || ""),
+      );
+      break;
+
+    case "name-desc":
+      sortedCustomers.sort((a, b) =>
+        (b.name || "").localeCompare(a.name || ""),
+      );
+      break;
+
+    default:
+      break;
+  }
 
   if (!customers.length) {
     return (
@@ -26,14 +46,26 @@ export default function CustomerTable() {
 
   return (
     <div className="mt-4 overflow-hidden rounded-lg border bg-white">
-      <div className="p-4 border-b">
+      <div className="flex gap-3 border-b p-4">
         <input
           type="text"
           placeholder="Search customers..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-black"
+          className="flex-1 rounded-lg border px-3 py-2"
         />
+
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          className="rounded-lg border px-3 py-2"
+        >
+          <option value="">Sort</option>
+
+          <option value="name-asc">Name A → Z</option>
+
+          <option value="name-desc">Name Z → A</option>
+        </select>
       </div>
 
       <div className="overflow-x-auto">
@@ -51,7 +83,7 @@ export default function CustomerTable() {
           </thead>
 
           <tbody>
-            {filteredCustomers.map((customer) => (
+            {sortedCustomers.map((customer) => (
               <tr
                 key={customer.id}
                 className="border-b last:border-b-0 hover:bg-gray-50"
