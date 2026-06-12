@@ -32,17 +32,17 @@ export default function Dashboard() {
         return <InvoiceTable />;
     }
   };
-
   const handleTestExtraction = async () => {
     for (const fileData of files) {
       const result = await processFile(fileData);
 
-      console.log(fileData.file.name);
+      console.log("FILE:", fileData.file.name);
 
-      console.log(result);
+      console.log("CATEGORY:", fileData.category);
+
+      console.log("RESULT:", result);
     }
   };
-
   return (
     <MainLayout>
       <FileUploader addFiles={addFiles} />
@@ -51,10 +51,11 @@ export default function Dashboard() {
 
       <button
         onClick={handleTestExtraction}
-        className="mt-2 mb-3 px-4 py-2 rounded-lg bg-black text-white">
+        className="mt-2 mb-3 px-4 py-2 rounded-lg bg-black text-white"
+      >
         Run Extraction
       </button>
-      
+
       <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {renderTab()}
