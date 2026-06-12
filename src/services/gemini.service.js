@@ -23,14 +23,14 @@ ${content}
 `,
     });
 
-    const result = response.text;
-    
-    const cleanedText = result
+    const text = response.text;
+
+    const cleanedText = text
       .replace(/```json/g, "")
       .replace(/```/g, "")
       .trim();
-    return cleanedText;
 
+    return JSON.parse(cleanedText);
   } catch (error) {
     if (error?.message?.includes("429")) {
       console.error("Gemini quota exceeded. Wait 1 minute and retry.");

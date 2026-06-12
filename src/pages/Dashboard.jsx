@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { useDispatch } from "react-redux";
+
 import MainLayout from "../layouts/MainLayout";
 
 import TabNavigation from "../components/layout/TabNavigation";
@@ -13,12 +15,23 @@ import useFileUpload from "../hooks/useFileUpload";
 import FileUploader from "../components/uploader/FileUploader";
 import FileList from "../components/uploader/FileList";
 
+import { setInvoices } from "../redux/invoiceSlice";
+import { setProducts } from "../redux/productSlice";
+import { setCustomers } from "../redux/customerSlice";
+
 import { processWithAI } from "../services/aiExtraction.service";
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState("Invoices");
+  const [activeTab, setActiveTab] =
+    useState("Invoices");
 
-  const { files, addFiles, removeFile } = useFileUpload();
+  const dispatch = useDispatch();
+
+  const {
+    files,
+    addFiles,
+    removeFile,
+  } = useFileUpload();
 
   const renderTab = () => {
     switch (activeTab) {
@@ -33,27 +46,66 @@ export default function Dashboard() {
     }
   };
 
-  const handleTestExtraction = async () => {
-    for (const fileData of files) {
+  const handleTestExtraction =
+    async () => {
       try {
-        const result = await processWithAI(fileData);
+        for (const fileData of files) {
+          const result =
+            await processWithAI(
+              fileData
+            );
 
-        console.log("FILE:", fileData.file.name);
+          if (!result) continue;
 
-        console.log("CATEGORY:", fileData.category);
+          dispatch(
+            setInvoices(
+              result.invoices || []
+            )
+          );
 
-        console.log("AI RESULT:", result);
+          dispatch(
+            setProducts(
+              result.products || []
+            )
+          );
+
+          dispatch(
+            setCustomers(
+              result.customers || []
+            )
+          );
+
+          console.log(
+            "FILE:",
+            fileData.file.name
+          );
+
+          console.log(
+            "CATEGORY:",
+            fileData.category
+          );
+
+          console.log(
+            "REDUX UPDATED:",
+            result
+          );
+        }
       } catch (error) {
-        console.error("Extraction failed:", error);
+        console.error(
+          "Extraction failed:",
+          error
+        );
       }
-    }
-  };
+    };
 
   return (
     <MainLayout>
       <FileUploader addFiles={addFiles} />
 
-      <FileList files={files} removeFile={removeFile} />
+      <FileList
+        files={files}
+        removeFile={removeFile}
+      />
 
       <button
         onClick={handleTestExtraction}
@@ -62,7 +114,10 @@ export default function Dashboard() {
         Run AI Extraction
       </button>
 
-      <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+      <TabNavigation
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
 
       {renderTab()}
     </MainLayout>
