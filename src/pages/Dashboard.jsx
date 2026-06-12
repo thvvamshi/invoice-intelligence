@@ -62,22 +62,32 @@ export default function Dashboard() {
         if (!result) continue;
 
         allInvoices.push(...(result.invoices || []));
-
         allProducts.push(...(result.products || []));
-
         allCustomers.push(...(result.customers || []));
       }
 
-      dispatch(setInvoices(deduplicateById(allInvoices)));
+      const uniqueInvoices = deduplicateById(allInvoices);
 
-      dispatch(setProducts(deduplicateById(allProducts)));
+      console.log("Before Deduplication", {
+        invoices: allInvoices.length,
+        products: allProducts.length,
+        customers: allCustomers.length,
+      });
 
-      dispatch(setCustomers(deduplicateById(allCustomers)));
+      console.log("After Deduplication", {
+        invoices: uniqueInvoices.length,
+        products: allProducts.length,
+        customers: allCustomers.length,
+      });
+
+      dispatch(setInvoices(uniqueInvoices));
+      dispatch(setProducts(allProducts));
+      dispatch(setCustomers(allCustomers));
 
       console.log("Merged Results", {
-        invoices: deduplicateById(allInvoices),
-        products: deduplicateById(allProducts),
-        customers: deduplicateById(allCustomers),
+        invoices: uniqueInvoices,
+        products: allProducts,
+        customers: allCustomers,
       });
     } catch (error) {
       console.error("Extraction failed:", error);
@@ -93,7 +103,6 @@ export default function Dashboard() {
       <FileUploader addFiles={addFiles} />
 
       <FileList files={files} removeFile={removeFile} />
-
 
       {error && (
         <div className="mt-3 mb-3 rounded-lg border border-red-300 bg-red-50 p-3 text-red-700">

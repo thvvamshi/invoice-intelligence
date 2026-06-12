@@ -3,42 +3,134 @@ import { ai } from "../lib/gemini";
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const PROMPT = `
-You are an invoice OCR and data extraction engine.
+You are an expert OCR and invoice data extraction engine.
 
-Extract invoice, customer and product information ONLY from the provided document.
+Extract structured business data ONLY from the provided invoice, receipt, bill, purchase order, or document.
 
-IMPORTANT:
-- NEVER invent values.
-- NEVER create placeholder IDs.
-- Use only values visible in the document.
-- If a field is missing use:
-  - "" for strings
-  - 0 for numbers
-  - [] for arrays
+STRICT RULES:
+
+1. NEVER invent values.
+2. NEVER hallucinate information.
+3. Extract ONLY values explicitly visible in the document.
+4. Return ONLY valid JSON.
+5. Do NOT return markdown.
+6. Do NOT return explanations.
+7. Do NOT return comments.
+8. Do NOT wrap the response in \`\`\`json blocks.
+
+MISSING VALUES:
+
+If a value is not present:
+- Use "" for strings
+- Use 0 for numbers
+- Use [] for arrays
+
+FIELD IDENTIFICATION:
 
 Invoice Number may appear as:
-- BILL NO
-- INVOICE NO
-- INVOICE NUMBER
+- Invoice No
+- Invoice Number
+- Bill No
+- Bill Number
+- Voucher No
+- Reference No
 
 Customer Name may appear as:
-- NAME
-- CUSTOMER
-- BILL TO
+- Customer
+- Customer Name
+- Bill To
+- Buyer
+- Party Name
+- Name
 
-Product Names may appear as:
-- ITEM NAME
-- PRODUCT
-- DESCRIPTION
+Product Name may appear as:
+- Product
+- Product Name
+- Item
+- Item Name
+- Description
+- Particulars
 
 Total Amount may appear as:
-- TOTAL AMOUNT
-- GRAND TOTAL
-- NET AMOUNT
+- Grand Total
+- Total Amount
+- Invoice Total
+- Net Amount
+- Amount Payable
 
-Return ONLY valid JSON.
+Tax Amount may appear as:
+- GST Amount
+- Tax Amount
+- Total Tax
+- CGST
+- SGST
+- IGST
 
-Schema:
+ID RULES:
+
+Invoice:
+- Use invoice number as invoice id.
+- Never leave invoice id empty if invoice number exists.
+
+Customer:
+- Use GSTIN as customer id if available.
+- Otherwise use customer name.
+- Otherwise use phone number.
+- Otherwise use "".
+
+Product:
+- Use product code if available.
+- Otherwise use SKU.
+- Otherwise use barcode.
+- Otherwise use product name.
+- Otherwise use "".
+
+RELATIONSHIP RULES:
+
+- invoice.customer_id MUST match the extracted customer id.
+- invoice.items.product_id MUST match the corresponding product id.
+- Every invoice item should be linked to a product whenever possible.
+
+PRODUCT RULES:
+
+Extract every visible product row.
+
+For each product extract:
+- id
+- name
+- quantity
+- unit_price
+- tax_percentage
+
+If quantity is missing:
+- use 1
+
+If tax percentage is missing:
+- use 0
+
+CUSTOMER RULES:
+
+Extract:
+- id
+- name
+- phone
+- gstin
+
+INVOICE RULES:
+
+Extract:
+- id
+- customer_id
+- invoice_date
+- total_amount
+- tax_amount
+
+For each invoice item extract:
+- product_id
+- quantity
+- line_amount
+
+OUTPUT SCHEMA:
 
 {
   "invoices": [
@@ -75,6 +167,8 @@ Schema:
     }
   ]
 }
+
+Return ONLY valid JSON matching the schema above.
 `;
 
 export const extractBusinessData = async (content) => {

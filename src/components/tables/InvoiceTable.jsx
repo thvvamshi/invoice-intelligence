@@ -1,18 +1,21 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { exportToCsv } from "../../utils/exportCsv";
+import { updateInvoice } from "../../redux/invoiceSlice";
 
 export default function InvoiceTable() {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("");
 
+  const dispatch = useDispatch();
+
   const invoices = useSelector((state) => state.invoices);
 
   const filteredInvoices = invoices.filter(
     (invoice) =>
-      invoice.id?.toLowerCase().includes(search.toLowerCase()) ||
-      invoice.customer_id?.toLowerCase().includes(search.toLowerCase()),
+      (invoice.id || "").toLowerCase().includes(search.toLowerCase()) ||
+      (invoice.customer_id || "").toLowerCase().includes(search.toLowerCase()),
   );
 
   const sortedInvoices = [...filteredInvoices];
@@ -84,7 +87,7 @@ export default function InvoiceTable() {
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b">
+          <thead className="border-b bg-gray-50">
             <tr>
               <th className="px-4 py-3 text-left font-semibold">Invoice ID</th>
 
@@ -107,14 +110,61 @@ export default function InvoiceTable() {
           <tbody>
             {sortedInvoices.map((invoice) => (
               <tr
-                key={invoice.id}
+                key={
+                  invoice.id ||
+                  `${invoice.invoice_date}-${invoice.total_amount}`
+                }
                 className="border-b last:border-b-0 hover:bg-gray-50"
               >
-                <td className="px-4 py-3 font-medium">{invoice.id || "-"}</td>
+                <td className="px-4 py-3 font-medium">
+                  {invoice.id ? (
+                    invoice.id
+                  ) : (
+                    <span className="rounded bg-red-100 px-2 py-1 text-xs font-medium text-red-600">
+                      Missing
+                    </span>
+                  )}
+                </td>
 
-                <td className="px-4 py-3">{invoice.invoice_date || "-"}</td>
+                <td className="px-4 py-3">
+                  <input
+                    value={invoice.invoice_date || ""}
+                    placeholder="Invoice Date"
+                    onChange={(e) =>
+                      dispatch(
+                        updateInvoice({
+                          id: invoice.id,
+                          updates: {
+                            invoice_date: e.target.value,
+                          },
+                        }),
+                      )
+                    }
+                    className={`w-full rounded border px-2 py-1 ${
+                      !invoice.invoice_date ? "border-red-300 bg-red-50" : ""
+                    }`}
+                  />
+                </td>
 
-                <td className="px-4 py-3">{invoice.customer_id || "-"}</td>
+                <td className="px-4 py-3">
+                  <input
+                    value={invoice.customer_id || ""}
+                    placeholder="Customer ID"
+                    onChange={(e) =>
+                      dispatch(
+                        updateInvoice({
+                          id: invoice.id,
+                          updates: {
+                            customer_id: e.target.value,
+                          },
+                        }),
+                      )
+                    }
+                    className={`w-full rounded border px-2 py-1 ${
+                      !invoice.customer_id ? "border-red-300 bg-red-50" : ""
+                    }`}
+                  />
+                </td>
 
                 <td className="px-4 py-3 text-right">
                   ₹{Number(invoice.total_amount || 0).toLocaleString("en-IN")}
