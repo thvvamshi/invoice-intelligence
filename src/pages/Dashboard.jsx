@@ -94,6 +94,7 @@ export default function Dashboard() {
 
       <FileList files={files} removeFile={removeFile} />
 
+
       {error && (
         <div className="mt-3 mb-3 rounded-lg border border-red-300 bg-red-50 p-3 text-red-700">
           {error}

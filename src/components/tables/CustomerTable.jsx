@@ -1,25 +1,73 @@
+import { useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function CustomerTable() {
-  const customers = useSelector(
-    (state) => state.customers
+  const [search, setSearch] = useState("");
+
+  const customers = useSelector((state) => state.customers);
+
+  const filteredCustomers = customers.filter(
+    (customer) =>
+      customer.id?.toLowerCase().includes(search.toLowerCase()) ||
+      customer.name?.toLowerCase().includes(search.toLowerCase()),
   );
 
   if (!customers.length) {
     return (
-      <p className="mt-4">
-        No customers available
-      </p>
+      <div className="mt-4 rounded-lg border bg-white p-8 text-center">
+        <h3 className="text-lg font-semibold">No Customers Found</h3>
+
+        <p className="mt-2 text-gray-500">
+          Upload documents and run AI extraction to view customer data.
+        </p>
+      </div>
     );
   }
 
   return (
-    <pre className="mt-4 p-4 bg-gray-100 rounded-lg overflow-auto">
-      {JSON.stringify(
-        customers,
-        null,
-        2
-      )}
-    </pre>
+    <div className="mt-4 overflow-hidden rounded-lg border bg-white">
+      <div className="p-4 border-b">
+        <input
+          type="text"
+          placeholder="Search customers..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-black"
+        />
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-gray-50 border-b">
+            <tr>
+              <th className="px-4 py-3 text-left font-semibold">Customer ID</th>
+
+              <th className="px-4 py-3 text-left font-semibold">Name</th>
+
+              <th className="px-4 py-3 text-left font-semibold">Phone</th>
+
+              <th className="px-4 py-3 text-left font-semibold">GSTIN</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {filteredCustomers.map((customer) => (
+              <tr
+                key={customer.id}
+                className="border-b last:border-b-0 hover:bg-gray-50"
+              >
+                <td className="px-4 py-3 font-medium">{customer.id || "-"}</td>
+
+                <td className="px-4 py-3">{customer.name || "-"}</td>
+
+                <td className="px-4 py-3">{customer.phone || "-"}</td>
+
+                <td className="px-4 py-3">{customer.gstin || "-"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
