@@ -5,19 +5,22 @@ export default function StatsCards() {
     (state) => state.invoices
   );
 
-  const products = useSelector(
-    (state) => state.products
-  );
-
-  const customers = useSelector(
-    (state) => state.customers
-  );
-
   const totalRevenue = invoices.reduce(
     (sum, invoice) =>
       sum + Number(invoice.total_amount || 0),
     0
   );
+
+  const totalTax = invoices.reduce(
+    (sum, invoice) =>
+      sum + Number(invoice.tax_amount || 0),
+    0
+  );
+
+  const averageInvoiceValue =
+    invoices.length > 0
+      ? totalRevenue / invoices.length
+      : 0;
 
   const cards = [
     {
@@ -25,23 +28,30 @@ export default function StatsCards() {
       value: invoices.length,
     },
     {
-      title: "Products",
-      value: products.length,
-    },
-    {
-      title: "Customers",
-      value: customers.length,
-    },
-    {
       title: "Revenue",
       value: `₹${totalRevenue.toLocaleString(
         "en-IN"
       )}`,
     },
+    {
+      title: "Tax Collected",
+      value: `₹${totalTax.toLocaleString(
+        "en-IN"
+      )}`,
+    },
+    {
+      title: "Average Invoice",
+      value: `₹${averageInvoiceValue.toLocaleString(
+        "en-IN",
+        {
+          maximumFractionDigits: 0,
+        }
+      )}`,
+    },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 mb-3 mt-2">
+    <div className="mb-4 mt-2 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
       {cards.map((card) => (
         <div
           key={card.title}

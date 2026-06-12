@@ -1,4 +1,5 @@
 import StatsCards from "../common/StatsCards";
+import BusinessInsights from "./BusinessInsights";
 
 export default function AnalyticsDashboard() {
   return (
@@ -14,6 +15,8 @@ export default function AnalyticsDashboard() {
       </div>
 
       <StatsCards />
+
+      <BusinessInsights />
     </div>
   );
 }
