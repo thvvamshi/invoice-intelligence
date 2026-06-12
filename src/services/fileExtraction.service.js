@@ -1,5 +1,6 @@
 import { parseExcelFile } from "./excel.service";
 import { parsePdfFile } from "./pdf.service";
+import { parseImageFile } from "./image.service";
 
 export const processFile = async (fileData) => {
   const { file, category } = fileData;
@@ -13,11 +14,9 @@ export const processFile = async (fileData) => {
         return await parsePdfFile(file);
 
       case "IMAGE":
-        console.log("Image extraction not implemented yet");
-        return null;
+        return await parseImageFile(file);
 
       default:
-        console.warn(`Unsupported file type: ${category}`);
         return null;
     }
   } catch (error) {

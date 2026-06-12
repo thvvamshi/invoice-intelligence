@@ -1,20 +1,12 @@
 import { processFile } from "./fileExtraction.service";
 import { extractBusinessData } from "./gemini.service";
 
-export const processWithAI =
-  async (fileData) => {
-    const extractedContent =
-      await processFile(fileData);
+export const processWithAI = async (fileData) => {
+  const extractedContent = await processFile(fileData);
 
-    if (!extractedContent) {
-      return null;
-    }
+  if (!extractedContent) {
+    return null;
+  }
 
-    return await extractBusinessData(
-      JSON.stringify(
-        extractedContent,
-        null,
-        2
-      )
-    );
-  };
+  return await extractBusinessData(extractedContent);
+};

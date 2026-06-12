@@ -26,6 +26,10 @@ import { deduplicateById } from "../utils/deduplicate";
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("Invoices");
 
+  const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState("");
+
   const dispatch = useDispatch();
 
   const { files, addFiles, removeFile } = useFileUpload();
@@ -45,6 +49,9 @@ export default function Dashboard() {
 
   const handleTestExtraction = async () => {
     try {
+      setLoading(true);
+      setError("");
+
       const allInvoices = [];
       const allProducts = [];
       const allCustomers = [];
@@ -74,6 +81,10 @@ export default function Dashboard() {
       });
     } catch (error) {
       console.error("Extraction failed:", error);
+
+      setError(error.message || "AI extraction failed.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,11 +94,18 @@ export default function Dashboard() {
 
       <FileList files={files} removeFile={removeFile} />
 
+      {error && (
+        <div className="mt-3 mb-3 rounded-lg border border-red-300 bg-red-50 p-3 text-red-700">
+          {error}
+        </div>
+      )}
+
       <button
         onClick={handleTestExtraction}
-        className="mt-2 mb-3 px-4 py-2 rounded-lg bg-black text-white"
+        disabled={loading}
+        className="mt-2 mb-3 px-4 py-2 rounded-lg bg-black text-white disabled:opacity-50"
       >
-        Run AI Extraction
+        {loading ? "Processing..." : "Run AI Extraction"}
       </button>
 
       <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
