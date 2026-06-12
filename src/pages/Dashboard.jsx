@@ -13,7 +13,7 @@ import useFileUpload from "../hooks/useFileUpload";
 import FileUploader from "../components/uploader/FileUploader";
 import FileList from "../components/uploader/FileList";
 
-import { processFile } from "../services/fileExtraction.service";
+import { processWithAI } from "../services/aiExtraction.service";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("Invoices");
@@ -32,17 +32,23 @@ export default function Dashboard() {
         return <InvoiceTable />;
     }
   };
+
   const handleTestExtraction = async () => {
     for (const fileData of files) {
-      const result = await processFile(fileData);
+      try {
+        const result = await processWithAI(fileData);
 
-      console.log("FILE:", fileData.file.name);
+        console.log("FILE:", fileData.file.name);
 
-      console.log("CATEGORY:", fileData.category);
+        console.log("CATEGORY:", fileData.category);
 
-      console.log("RESULT:", result);
+        console.log("AI RESULT:", result);
+      } catch (error) {
+        console.error("Extraction failed:", error);
+      }
     }
   };
+
   return (
     <MainLayout>
       <FileUploader addFiles={addFiles} />
@@ -53,7 +59,7 @@ export default function Dashboard() {
         onClick={handleTestExtraction}
         className="mt-2 mb-3 px-4 py-2 rounded-lg bg-black text-white"
       >
-        Run Extraction
+        Run AI Extraction
       </button>
 
       <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
