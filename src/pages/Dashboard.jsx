@@ -51,7 +51,7 @@ export default function Dashboard() {
 
       <button
         onClick={handleTestExtraction}
-        className="mb-6 px-4 py-2 rounded-lg bg-black text-white">
+        className="mt-2 mb-3 px-4 py-2 rounded-lg bg-black text-white">
         Run Extraction
       </button>
       
