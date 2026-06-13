@@ -1,8 +1,16 @@
 # AI-Powered Invoice Data Extraction System
 
-An intelligent document processing application that automatically extracts structured business data from invoices, receipts, and financial documents using OCR and Google Gemini AI.
+An intelligent document processing application that automatically extracts structured business data from invoices, receipts, PDFs, images, and spreadsheets using OCR and Google Gemini AI.
 
-The system transforms unstructured PDF and image-based invoices into normalized business entities including invoices, products, and customers, enabling efficient document digitization and data management.
+The system transforms unstructured business documents into normalized Invoice, Product, and Customer entities for validation, analytics, and business reporting.
+
+---
+
+# Live Demo
+
+Frontend: https://your-vercel-url.vercel.app
+
+GitHub Repository: https://github.com/your-username/invoice-intelligence
 
 ---
 
@@ -10,122 +18,89 @@ The system transforms unstructured PDF and image-based invoices into normalized 
 
 Organizations process large volumes of invoices and business documents daily. Manual data entry is time-consuming, error-prone, and difficult to scale.
 
-This application automates the extraction process by leveraging OCR and Large Language Models (LLMs) to identify and structure key business information from uploaded documents.
-
-The extracted data is normalized, validated, deduplicated, and presented in an organized format for further processing and analysis.
+This application automates extraction using OCR and Google Gemini AI, converting raw business documents into structured data that can be searched, validated, edited, analyzed, and exported.
 
 ---
 
 # Features
 
-## Document Upload
+## Document Processing
 
-* Upload PDF invoices
-* Upload image-based invoices
-* Support for multiple file uploads
-* Multi-page document processing
+* PDF Upload Support
+* Image Upload Support
+* Excel Upload Support
+* Multiple File Upload
+* Mixed File Upload Processing
+* Multi-Page Document Processing
 
-## AI-Powered Extraction
+## AI Extraction
 
-* OCR-based text extraction
-* Google Gemini 2.5 Flash integration
-* Structured JSON generation
-* Intelligent field recognition
-* Entity relationship mapping
+* OCR-Based Text Extraction
+* Google Gemini 2.5 Flash Integration
+* Structured JSON Generation
+* Entity Recognition
+* Customer Extraction
+* Product Extraction
+* Invoice Extraction
 
-## Invoice Processing
+## Invoice Management
 
-Extracts:
+* Search Invoices
+* Sort Invoices
+* Edit Missing Fields
+* CSV Export
+* Missing Field Highlighting
 
-* Invoice Number
-* Invoice Date
-* Customer Reference
-* Total Amount
-* Tax Amount
-* Invoice Items
+## Product Management
 
-## Product Processing
+* Search Products
+* Sort Products
+* Inline Editing
+* Price With Tax Calculation
+* CSV Export
 
-Extracts:
+## Customer Management
 
-* Product ID
-* Product Name
-* Quantity
-* Unit Price
-* Tax Percentage
+* Search Customers
+* Sort Customers
+* Inline Editing
+* Total Purchase Amount Calculation
+* CSV Export
 
-## Customer Processing
+## Analytics Dashboard
 
-Extracts:
+* Total Revenue
+* Total Tax Collected
+* Average Invoice Value
+* Total Invoices
+* Total Products
+* Total Customers
+* Top Customer
+* Top Product
+* Recent Activity Summary
+* Validation Summary
 
-* Customer ID
-* Customer Name
-* GSTIN
-* Phone Number
+## Data Validation
+
+* Missing Field Detection
+* Missing Field Highlighting
+* User Corrections
+* Redux State Synchronization
 
 ## Data Management
 
-* Multi-document merging
-* Duplicate record prevention
-* Normalized data structure
-* Redux-based state management
+* Multi-Document Merging
+* Deduplication
+* Normalized Data Models
+* Redux Toolkit State Management
 
 ## Error Handling
 
-* Invalid file validation
-* Gemini API retry mechanism
-* Graceful failure handling
-* User-friendly error messages
-
----
-
-# System Architecture
-
-```text
-┌───────────────────┐
-│ Document Upload   │
-└─────────┬─────────┘
-          │
-          ▼
-┌───────────────────┐
-│ File Processing   │
-└─────────┬─────────┘
-          │
-          ▼
-┌───────────────────┐
-│ OCR Extraction    │
-└─────────┬─────────┘
-          │
-          ▼
-┌───────────────────┐
-│ Google Gemini AI  │
-└─────────┬─────────┘
-          │
-          ▼
-┌───────────────────┐
-│ Structured JSON   │
-└─────────┬─────────┘
-          │
-          ▼
-┌───────────────────┐
-│ Data Validation   │
-└─────────┬─────────┘
-          │
-          ▼
-┌───────────────────┐
-│ Deduplication     │
-└─────────┬─────────┘
-          │
-          ▼
-┌───────────────────┐
-│ Redux Store       │
-└─────────┬─────────┘
-          │
-          ▼
-┌───────────────────┐
-│ UI Data Tables    │
-└───────────────────┘
-```
+* Invalid File Validation
+* Unsupported File Detection
+* Gemini API Retry Logic
+* Graceful Failure Handling
+* User-Friendly Error Messages
 
 ---
 
@@ -141,7 +116,6 @@ Extracts:
 ## AI & OCR
 
 * Google Gemini 2.5 Flash
-* OCR-based document parsing
 
 ## State Management
 
@@ -155,138 +129,71 @@ Extracts:
 
 ---
 
-# Project Structure
+# System Architecture
 
-```bash
-src
-├── components
-│   ├── layout
-│   ├── tables
-│   └── uploader
-│
-├── hooks
-│   └── useFileUpload.js
-│
-├── layouts
-│   └── MainLayout.jsx
-│
-├── pages
-│   └── Dashboard.jsx
-│
-├── redux
-│   ├── invoiceSlice.js
-│   ├── productSlice.js
-│   ├── customerSlice.js
-│   └── store.js
-│
-├── services
-│   ├── aiExtraction.service.js
-│   ├── fileExtraction.service.js
-│   ├── gemini.service.js
-│   ├── pdfExtraction.service.js
-│   ├── imageExtraction.service.js
-│   └── excelExtraction.service.js
-│
-├── utils
-│   ├── deduplicate.js
-│   └── normalizeData.js
-│
-└── lib
-    └── gemini.js
-```
+Document Upload
+↓
+File Processing
+↓
+OCR Extraction
+↓
+Google Gemini AI
+↓
+Structured JSON
+↓
+Validation
+↓
+Deduplication
+↓
+Redux Store
+↓
+Analytics + Tables
 
 ---
 
 # Data Extraction Workflow
 
-## Step 1: Upload Documents
+### Step 1
 
-Users upload one or more PDF or image-based invoices through the dashboard interface.
+Upload PDF, Image, or Excel documents.
 
-## Step 2: File Processing
+### Step 2
 
-The application identifies the file type and extracts raw document content.
+Raw content extraction.
 
-Supported formats:
+### Step 3
 
-* PDF
-* JPG
-* JPEG
-* PNG
+OCR processing.
 
-## Step 3: OCR Extraction
+### Step 4
 
-Text content is extracted from the uploaded document.
+Google Gemini AI extraction.
 
-## Step 4: AI Processing
+### Step 5
 
-Extracted content is sent to Google Gemini AI with a structured extraction prompt.
+JSON normalization.
 
-The AI identifies:
+### Step 6
 
-* Invoice information
-* Product information
-* Customer information
+Deduplication.
 
-## Step 5: Data Normalization
+### Step 7
 
-All extracted information is converted into a standardized JSON schema.
+Redux state management.
 
-## Step 6: Deduplication
+### Step 8
 
-Duplicate invoices, products, and customers are removed.
-
-## Step 7: State Management
-
-Processed records are stored in Redux for centralized application state management.
-
-## Step 8: Visualization
-
-Structured data is displayed in dedicated Invoice, Product, and Customer tables.
+Visualization and analytics.
 
 ---
 
 # AI Output Structure
 
-The extraction engine returns data in a standardized JSON format.
-
-## Example Output
-
 ```json
 {
-  "invoices": [
-    {
-      "id": "INV-1001",
-      "customer_id": "ABC Pvt Ltd",
-      "invoice_date": "2024-11-12",
-      "total_amount": 10000,
-      "tax_amount": 1800,
-      "items": [
-        {
-          "product_id": "IPHONE16",
-          "quantity": 1,
-          "line_amount": 79990
-        }
-      ]
-    }
-  ],
-  "products": [
-    {
-      "id": "IPHONE16",
-      "name": "iPhone 16",
-      "quantity": 1,
-      "unit_price": 79990,
-      "tax_percentage": 18
-    }
-  ],
-  "customers": [
-    {
-      "id": "29ABCDE1234F1Z5",
-      "name": "ABC Pvt Ltd",
-      "phone": "9876543210",
-      "gstin": "29ABCDE1234F1Z5"
-    }
-  ]
+  "invoices": [],
+  "products": [],
+  "customers": []
 }
 ```
 
@@ -298,63 +205,15 @@ The extraction engine returns data in a standardized JSON format.
 
 ```json
 {
-  "id": "INV-1001",
   "customer_id": "ABC Pvt Ltd"
 }
 ```
-
-The `customer_id` field links an invoice to a customer record.
-
----
 
 ## Invoice Item → Product
 
 ```json
 {
-  "product_id": "IPHONE16",
-  "quantity": 1,
-  "line_amount": 79990
-}
-```
-
-The `product_id` field links invoice items to product records.
-
----
-
-# Data Schema
-
-## Invoice
-
-```json
-{
-  "id": "INV-1001",
-  "customer_id": "ABC Pvt Ltd",
-  "invoice_date": "2024-11-12",
-  "total_amount": 10000,
-  "tax_amount": 1800
-}
-```
-
-## Product
-
-```json
-{
-  "id": "IPHONE16",
-  "name": "iPhone 16",
-  "quantity": 1,
-  "unit_price": 79990,
-  "tax_percentage": 18
-}
-```
-
-## Customer
-
-```json
-{
-  "id": "29ABCDE1234F1Z5",
-  "name": "ABC Pvt Ltd",
-  "phone": "9876543210",
-  "gstin": "29ABCDE1234F1Z5"
+  "product_id": "IPHONE16"
 }
 ```
 
@@ -362,111 +221,139 @@ The `product_id` field links invoice items to product records.
 
 # Deduplication Strategy
 
-The system prevents duplicate records during multi-file processing.
-
-## Invoice Deduplication
-
-```text
-Invoice ID
-```
-
-## Product Deduplication
-
-```text
-Product ID
-```
-
-Fallback:
-
-```text
-Product Name
-```
-
-## Customer Deduplication
+## Invoice
 
 Priority:
 
-```text
-GSTIN
-↓
-Phone Number
-↓
-Customer Name
-```
+* Invoice ID
+
+## Product
+
+Priority:
+
+* Product ID
+
+Fallback:
+
+* Product Name
+
+## Customer
+
+Priority:
+
+* GSTIN
+* Phone Number
+* Customer Name
 
 ---
 
-# Error Handling
+# Validation Features
 
-The application includes robust error handling mechanisms.
+The system automatically detects:
 
-## Supported Cases
+* Missing Customer Name
+* Missing Phone Number
+* Missing GSTIN
+* Missing Product Name
+* Missing Invoice Date
 
-* Invalid file uploads
-* Unsupported file formats
-* OCR failures
-* Gemini API failures
-* API rate limits
-* Temporary service outages
-
-## Retry Strategy
-
-Automatic retries are performed for:
-
-* 429 Rate Limit
-* 503 Service Unavailable
-* Resource Exhausted errors
+Users can edit records directly from the UI.
 
 ---
 
 # Test Cases Covered
 
-## TC-1: Single Invoice Extraction
+## Case-1: Invoice PDFs
 
-### Objective
+Objective:
+Process PDF invoices and extract structured business entities.
 
-Validate extraction from a single invoice document.
+Result:
 
-### Result
-
-* Invoice extraction successful
-* Product extraction successful
-* Customer extraction successful
-
-Status: ✅ Passed
-
----
-
-## TC-2: Multi-File Processing
-
-### Objective
-
-Validate extraction from multiple uploaded documents.
-
-### Result
-
-* Multi-file processing successful
-* Result merging successful
-* Deduplication successful
+* Invoice Extraction Successful
+* Product Extraction Successful
+* Customer Extraction Successful
 
 Status: ✅ Passed
 
 ---
 
-## TC-3: Multi-Invoice Document
+## Case-2: Invoice PDFs + Images
 
-### Objective
+Objective:
+Process PDF and Image documents together.
 
-Validate extraction from a document containing multiple invoices.
+Result:
 
-### Result
-
-* Multiple invoices extracted
-* Customer mapping successful
-* Product mapping successful
-* Relationship mapping successful
+* Multi-Format Processing Successful
+* Data Merging Successful
 
 Status: ✅ Passed
+
+---
+
+## Case-3: Single Excel File
+
+Objective:
+Extract records from Excel documents.
+
+Result:
+
+* Structured Data Extracted Successfully
+
+Status: ✅ Passed
+
+---
+
+## Case-4: Multiple Excel Files
+
+Objective:
+Merge data from multiple Excel files.
+
+Result:
+
+* Multi-File Processing Successful
+* Deduplication Successful
+
+Status: ✅ Passed
+
+---
+
+## Case-5: Mixed File Types
+
+Objective:
+Process PDFs, Images, and Excel files together.
+
+Result:
+
+* Unified Extraction Pipeline Successful
+* Validation Successful
+* Analytics Generated Successfully
+
+Status: ✅ Passed
+
+---
+
+# Screenshots & Evidence
+
+All screenshots and testing evidence are included in:
+
+```text
+screenshots.zip
+```
+
+The screenshot archive contains:
+
+* Case-1 Results
+* Case-2 Results
+* Case-3 Results
+* Case-4 Results
+* Case-5 Results
+* Analytics Dashboard
+* Validation Summary
+* Customer Management
+* Product Management
+* Invoice Management
 
 ---
 
@@ -476,7 +363,7 @@ Status: ✅ Passed
 
 ```bash
 git clone <repository-url>
-cd ai-invoice-extraction-system
+cd invoice-intelligence
 ```
 
 ## Install Dependencies
@@ -486,8 +373,6 @@ npm install
 ```
 
 ## Configure Environment Variables
-
-Create a `.env` file:
 
 ```env
 VITE_GEMINI_API_KEY=your_api_key
@@ -503,19 +388,18 @@ npm run dev
 
 # Future Enhancements
 
-* Database integration
-* Authentication and authorization
-* Export to CSV and Excel
-* Search and filtering
-* Analytics dashboard
-* Cloud storage integration
-* Batch processing pipeline
-* Invoice approval workflows
+* Authentication
+* Database Integration
+* Excel Export
+* Cloud Storage
+* Approval Workflow
+* Batch Processing
+* Role-Based Access Control
 
 ---
 
 # Author
 
-**Boda Vamshi Kumar**
+Boda Vamshi Kumar
 
-AI-powered document intelligence application for automated invoice processing, structured data extraction, and business record management.
+AI-powered document intelligence platform for invoice processing, business entity extraction, validation, analytics, and reporting.
